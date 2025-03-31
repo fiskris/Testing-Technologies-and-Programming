@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #b4b4ba;
+            font-family: 'Helvetica', sans-serif;
+        }
+        .calculator {
+            background-color: #333;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            width: 300px;
+        }
+        .display {
+            background-color: #222;
+            color: white;
+            font-size: 2.5rem;
+            text-align: right;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            width: 88%;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 15px;
+        }
+        .button {
+            background-color: #444;
+            color: white;
+            font-size: 2rem;
+            border: none;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #555;
+        }
+        .button:active {
+            background-color: #666;
+        }
+        .button-clear {
+            background-color: #f44336;
+        }
+        .button-clear:hover {
+            background-color: #e53935;
+        }
+        .button-equal {
+            background-color: #f07a1a;
+            grid-row: span 3;
+            grid-column: span 1;
+            font-size: 3rem;
+        }
+
+        .button-equal:hover {
+            background-color: #ed9852;
+        }
+
+        .button-operator {
+            background-color: #ada79d;
+        }
+
+        .button-operator:hover {
+            background-color: #c3bfba;
+        }
+
+        .button-operator.active {
+            background-color: #ed9852;
+        }
+
+        .button-special {
+            background-color: #607d8b;
+        }
+
+        .button-special:hover {
+            background-color: #546e7a;
+        }
+
+        .button-negative {
+            background-color: #607d8b;
+            grid-column: span 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display" id="display">0</div>
+        <div class="buttons">
+            <!-- Operators -->
+            <button class="button button-operator" data-operator="/" onclick="setOperator('/')">&divide</button>
+            <button class="button button-operator" data-operator="*" onclick="setOperator('*')">*</button>
+            <button class="button button-operator" data-operator="-" onclick="setOperator('-')">-</button>
+            <button class="button button-operator" data-operator="+" onclick="setOperator('+')">+</button>
+            <!-- Numbers and Dot -->
+            <button class="button" onclick="appendNumber('7')">7</button>
+            <button class="button" onclick="appendNumber('8')">8</button>
+            <button class="button" onclick="appendNumber('9')">9</button>
+      <!-- Negative toggle button -->
+          <button class="button button-special button-negative" onclick="toggleNegative()">&plusmn</button>
+
+            <button class="button" onclick="appendNumber('4')">4</button>
+            <button class="button" onclick="appendNumber('5')">5</button>
+            <button class="button" onclick="appendNumber('6')">6</button>
+     <!-- Equals button -->
+            <button class="button button-equal" onclick="calculate()">=</button>
+
+            <button class="button" onclick="appendNumber('1')">1</button>
+            <button class="button" onclick="appendNumber('2')">2</button>
+            <button class="button" onclick="appendNumber('3')">3</button>
+
+            <button class="button" onclick="appendNumber('0')">0</button>
+            <button class="button" onclick="appendDot()">.</button>
+    <!-- Clear button -->
+            <button class="button button-clear" onclick="clearDisplay()">C</button> 
+        </div>
+    </div>
+    <script>
+        let currentInput = '';
+        let previousInput = '';
+        let operator = '';
+        let isResultDisplayed = false;
+    // function to Update the display of the calculator
+        function updateDisplay() {
+            document.getElementById('display').textContent = currentInput.toString() || '0';
+        }
+    // Clearing calculator's screen
+        function clearDisplay() {
+            currentInput = "";
+            previousInput = "";
+            operator = '';
+            isResultDisplayed = false;
+            updateDisplay();
+            resetOperators();
+        }
+   // Append a number to the display
+        function appendNumber(number) {
+            if (isResultDisplayed) {
+                currentInput = number;
+                isResultDisplayed = false;
+            } else {
+                if (currentInput === '0' && number !== '.') {
+                    currentInput = number;
+                } else {
+                    currentInput += number;
+                }
+            }
+            updateDisplay();
+        }
+   // Append a dot to the display
+        function appendDot() {
+            
+            if (isResultDisplayed) {
+                currentInput = '.';
+                isResultDisplayed = false;
+            } else {
+                if (!currentInput.includes('.')) {                    
+                    currentInput += '.';
+                }
+            }
+            updateDisplay();
+        }
+    // Toggle the sign of the current number (negative/positive)
+        function toggleNegative() {
+            if (currentInput !== "") {
+                currentInput = (parseFloat(currentInput) * -1).toString();
+                updateDisplay();
+            }
+        }
+  // Setting the operator and prepare for the next number input
+        function setOperator(op) {
+            if (isResultDisplayed) {
+                previousInput = currentInput;
+                isResultDisplayed = false;
+            } else if (previousInput !== '') {
+                calculate();
+            }
+            operator = op;
+            previousInput = currentInput;
+            currentInput = "";
+            resetOperators();
+            document.querySelector(`.button-operator[data-operator='${op}']`).classList.add('active');
+        }
+    // Reset operator button highlights
+        function resetOperators() {
+            document.querySelectorAll('.button-operator').forEach(button => {
+                button.classList.remove('active');
+            });
+        }
+     // Perform the calculation based on the operator
+        function calculate() {
+            if (previousInput === '' || currentInput === '') return;
+            let result;
+            let prev = parseFloat(previousInput);
+            let curr = parseFloat(currentInput);
+
+            switch (operator) {
+                case '+':
+                    result = prev + curr;
+                    break;
+                case '-':
+                    result = prev - curr;
+                    break;
+                case '*':
+                    result = prev * curr;
+                    break;
+                case '/':
+                    if (curr === 0) {
+                        result = 'Error';
+                    } else {
+                        result = prev / curr;
+                    }
+                    break;
+                default:
+                    return;
+            }
+            currentInput = result.toString();
+            isResultDisplayed = true;
+            operator = '';
+            previousInput = '';
+            updateDisplay();
+            resetOperators();
+        }
+
+  // Event listeners for the equal and clear buttons
+        document.querySelector('.button-equal').addEventListener('click', calculate);
+        document.querySelector('.button-clear').addEventListener('click', clearDisplay);
+    </script>
+</body>
+</html>

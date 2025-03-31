@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Guess the Number game</title>
+</head>
+<body>
+    <h1>Welcome to Simple Guess the Number game</h1>
+    <h3><p>Enter a number between 0 and 9:</p>
+    <!-- Input field for user to enter their guess between 0 and 9  -->
+    <input type="number" id="userGuess" min="0" max="9">
+    <button onclick="playGame()">Submit your Guess</button>
+    <p id="result"></p>
+    <!-- Button to play again (not vissible during game) - calling function resetGame --> 
+    <button id="playAgain" onclick="resetGame()" style="display: none;">Play Again</button>
+    </h3>
+<!--java script game-->
+<script>
+     // declaaring  minnumber and maxnumber
+     const minnumber = 0;
+        const maxnumber = 9;
+        // Generates a random number between minnumber and maxnumber
+        const randomNumber = Math.floor(Math.random() * maxnumber) + minnumber; 
+        // Function to check if the user's guess is correct
+        function playGame() {
+            // assigning to const userGuess user's guess from the input field id="userGuess" and convert it to a number
+            const userGuess = Number(document.getElementById('userGuess').value);
+            const result = document.getElementById('result');
+            const playAgainButton = document.getElementById('playAgain');
+            // Check if the user's guess is a valid number
+            if (isNaN(userGuess) || userGuess < minnumber || userGuess > maxnumber) {
+                result.textContent = "Please enter a valid number.";
+                return;
+            }
+            // Check if the user's guess is too low, too high or correct
+            //and overwrite the result field with the appropriate message
+            if (userGuess < randomNumber) {
+                result.textContent = `Your guess of ${userGuess} is too low! Try again.`;
+            } else if (userGuess > randomNumber) {
+                result.textContent = `Your guess of ${userGuess} is too high! Try again.`;
+            } else {
+                result.textContent = `Congratulations! Your guess of ${userGuess} is correct!`;
+                playAgainButton.style.display = "block"; // Display the play again button
+            }
+        }
+        // Function to reset the game
+        function resetGame() {
+            //new random number
+            randomNumber = Math.floor(Math.random() *maxnumber) + minnumber;
+            //clearing the result field
+            document.getElementById('result').textContent = "";
+            //clearing the input field
+            document.getElementById('userGuess').value = "";
+            //hiding the play again button
+            document.getElementById('playAgain').style.display = "none";
+        }
+    </script>
+</body>
+</html>
