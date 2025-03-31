@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title> Rock, Paper and Scissors game</title>
+    </head> 
+    <body>
+		<div align="center">		
+			<h2 id ='rules' style.border= "#00000F" >The Winning Rules are as follows:</br></br>
+				Rock smashes Scissors.</br>Paper covers Rock.</br>Scissors cut Paper.</br>
+			</h2>	
+        	<div id ="text1" align="center"><h1>Let's play</h1></div> 
+			<div id ="text" align="center"><h2>Choose Rock, Paper or Scissors</h2></div> 
+		</div>	
+
+
+ 		<div id = "btnParent" align="center"> 
+			<button style="height:200px;width:200px;background:#D9CCAE;font-size:20px;cursor: pointer" id="Rock"  type= "button" onclick="playGame(this.id)">ROCK</button>        
+       	 	<button style="height:200px;width:200px;background:#FAF0DB;font-size:20px;cursor: pointer" id="Paper"  type= "button" onclick="playGame(this.id)">PAPER</button>
+			<button style="height:200px;width:200px;background:#B6DAFA;font-size:20px;cursor: pointer" id="Scissors"  type= "button" onclick="playGame(this.id)">SCISSORS</button>
+        
+        </div>
+		<script>
+		// function to play the game
+			var playGame = btnClicked =>{		
+				let CompSelection = "";
+				let rand = Math.floor(Math.random() * 3) + 1;			// generating random number between 1 and 3
+				let txt = document.getElementById("text1");
+				txt.innerHTML ="";	
+				if ( rand == 1 ){										// rock if  1
+					CompSelection = "Rock";
+				}
+				else if ( rand == 2 ){								// paper if  2
+					CompSelection = "Paper";
+				}
+				else {													//Scissors for other 
+					CompSelection = "Scissors";
+				}
+			// displaying players and computer's selections 
+				txt.innerHTML = " Your choice:  " +btnClicked +"<br>My random choice: " +CompSelection;
+				txt.style.fontSize = "200%";	
+				txt.style.width = "20%";
+				txt.style.border = "thick solid #0000FF";
+				txt.style.background = "#A5E0FA";
+			// checking if same choice made
+				if ( btnClicked == CompSelection){								
+					txt.innerHTML += "<br>It's a DRAW<BR>Try again.";
+					}			
+			// if player won
+				else if ( (btnClicked == "Rock" && CompSelection == "Scissors") || (btnClicked == "Paper" && CompSelection == "Rock") ||
+					(btnClicked == "Scissors" && CompSelection == "Paper")  ){
+						txt.innerHTML += "<br>You WON<BR>Try again.";
+						txt.style.border = "thick solid green";
+						txt.style.background = "#37FA5D";
+				}
+			// if player lost
+				else {
+				txt.innerHTML += "<br>You Lost<BR>Try again.";
+				txt.style.border = "thick solid red";
+				txt.style.background = "#F09997";
+				}		
+			}
+		</script>
+	</body>
+</html>
